@@ -1,18 +1,23 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCV Preview</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CV Preview</title>
   <style>
+    :root {
+      --primary: #004080;
+      --background: #f4f8fc;
+    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f8fc;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--background);
       margin: 0;
       padding: 0;
       color: #333;
     }
     header, footer {
-      background-color: #004080;
+      background-color: var(--primary);
       color: white;
       text-align: center;
       padding: 1rem;
@@ -20,158 +25,131 @@
     main {
       max-width: 960px;
       margin: 2rem auto;
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
     h2 {
-      color: #004080;
-      text-transform: uppercase;
-      border-bottom: 2px solid #aad8ff;
-      padding-bottom: 5px;
+      color: var(--primary);
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.3rem;
       margin-top: 2rem;
     }
-    .section {
-      margin-bottom: 1.5rem;
+    ul {
+      padding-left: 1.2rem;
     }
-    .download-btn {
-      display: block;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .download-btn a {
-      background-color: #004080;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      text-decoration: none;
-      border-radius: 6px;
+    .label {
       font-weight: bold;
     }
-    .download-btn a:hover {
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
       background-color: #0060b8;
     }
-    footer a {
-      color: #aad8ff;
-      margin: 0 10px;
-      text-decoration: none;
+
+    /* Template styles */
+    body.template-classic {
+      --primary: #004080;
+      --background: #f4f8fc;
     }
-    footer a:hover {
-      text-decoration: underline;
+    body.template-modern {
+      --primary: #2c3e50;
+      --background: #ecf0f1;
     }
-    .modern h2 {
-      color: #0060b8;
-      font-size: 1.2rem;
-      text-transform: none;
-    }
-    .elegant {
-      font-family: Georgia, serif;
-      background-color: #fcfcfc;
-      color: #222;
-    }
-    .elegant h2 {
-      font-family: 'Garamond', serif;
-      font-style: italic;
-      font-size: 1.4rem;
-      color: #555;
+    body.template-elegant {
+      --primary: #6a1b9a;
+      --background: #f3e5f5;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>CV Preview</h1>
-    <p>Here is your completed CV</p>
-  </header>  <main id="preview-content"></main>  <div class="download-btn">
-    <a href="#" onclick="window.print(); return false;">Download as PDF</a>
-  </div>  <footer>
-    <p>
-      <a href="index.html">Home</a> |
-      <a href="about.html">About Us</a> |
-      <a href="contact.html">Contact</a> |
-      <a href="faqs.html">FAQs</a> |
-      <a href="terms.html">Terms</a> |
-      <a href="privacy.html">Privacy Policy</a>
-    </p>
+    <p>Your selected template: <span id="templateName"></span></p>
+  </header>
+
+  <main id="cvPreview">
+    <!-- CV Content will go here -->
+  </main>
+
+  <div class="buttons" style="max-width: 960px; margin: auto;">
+    <button onclick="goBack()">← Go Back</button>
+    <button onclick="downloadPDF()">⬇ Download PDF</button>
+  </div>
+
+  <footer>
     <p>&copy; 2025 SmartCV. All rights reserved.</p>
-  </footer>  <script>
-    function addSection(title, html) {
-      const container = document.createElement('div');
-      container.className = 'section';
-      container.innerHTML = `<h2>${title}</h2>${html}`;
-      document.getElementById('preview-content').appendChild(container);
+  </footer>
+
+  <!-- html2pdf CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('cvData'));
+    const preview = document.getElementById('cvPreview');
+    const templateDisplay = document.getElementById('templateName');
+
+    if (!data) {
+      preview.innerHTML = "<p>No CV data found. Please go back and fill out the form.</p>";
+    } else {
+      // Apply template style to body
+      document.body.classList.add('template-' + data.template);
+
+      templateDisplay.textContent = data.template;
+
+      function createList(title, items) {
+        if (!items || items.length === 0) return '';
+        const htmlItems = items.map(entry => `<li>${Array.isArray(entry) ? entry.join(' - ') : entry}</li>`).join('');
+        return `<h2>${title}</h2><ul>${htmlItems}</ul>`;
+      }
+
+      preview.innerHTML = `
+        <h2>Personal Information</h2>
+        <p><span class="label">Full Name:</span> ${data.fullname}</p>
+        <p><span class="label">Email:</span> ${data.email}</p>
+        <p><span class="label">Phone:</span> ${data.phone}</p>
+        <p><span class="label">Address:</span> ${data.address}</p>
+        <p><span class="label">Nationality:</span> ${data.nationality}</p>
+        <p><span class="label">Date of Birth:</span> ${data.dob}</p>
+        <p><span class="label">Gender:</span> ${data.gender}</p>
+        <p><span class="label">Marital Status:</span> ${data.marital_status}</p>
+        <p><span class="label">Languages:</span> ${data.language}</p>
+        <p><span class="label">LinkedIn / Website:</span> ${data.linkedin}</p>
+
+        <h2>Personal Summary</h2>
+        <p>${data.summary || 'N/A'}</p>
+
+        ${createList('Education Background', data.education)}
+        ${createList('Work Experience', data.experience)}
+        ${createList('Key Competencies', [data.competencies])}
+        ${createList('Communication Skills', data.commSkills)}
+        ${createList('Computer Skills', data.compSkills)}
+        ${createList('Hobbies and Interests', [data.hobbies])}
+        ${createList('Referees', data.referees)}
+      `;
     }
 
-    window.onload = function() {
-      const data = JSON.parse(localStorage.getItem('cvData')) || {};
-      const content = document.getElementById('preview-content');
-      const template = data.template || 'classic';
-
-      // Apply template style
-      content.classList.add(template);
-
-      if (data.summary) {
-        addSection("A: Personal Summary", `<p>${data.summary}</p>`);
-      }
-
-      if (data.fullname || data.email || data.phone) {
-        addSection("Personal Information", `
-          <p><strong>Name:</strong> ${data.fullname || ''}</p>
-          <p><strong>Email:</strong> ${data.email || ''}</p>
-          <p><strong>Phone:</strong> ${data.phone || ''}</p>
-          <p><strong>Address:</strong> ${data.address || ''}</p>
-          <p><strong>Nationality:</strong> ${data.nationality || ''}</p>
-          <p><strong>Date of Birth:</strong> ${data.dob || ''}</p>
-          <p><strong>Gender:</strong> ${data.gender || ''}</p>
-          <p><strong>Marital Status:</strong> ${data.marital_status || ''}</p>
-          <p><strong>Languages:</strong> ${data.language || ''}</p>
-          <p><strong>LinkedIn/Website:</strong> ${data.linkedin || ''}</p>
-        `);
-      }
-
-      if (Array.isArray(data.education)) {
-        let html = data.education.map(e => `
-          <p><strong>${e[0]}</strong>: ${e[1]} - ${e[2]} (${e[3]} - ${e[4]}) Grade: ${e[5]}</p>
-        `).join('');
-        addSection("B: Educational Background", html);
-      }
-
-      if (Array.isArray(data.experience)) {
-        let html = data.experience.map(e => `
-          <p><strong>${e[0]}</strong> at ${e[2]} (${e[1]})<br>
-          Department: ${e[3]}, Position: ${e[4]}, Tel: ${e[5]}</p>
-        `).join('');
-        addSection("C: Working Experience", html);
-      }
-
-      if (data.competencies) {
-        addSection("D: Key Competencies", `<p>${data.competencies}</p>`);
-      }
-
-      if (Array.isArray(data.commSkills) && data.commSkills.length) {
-        let html = '<ul>' + data.commSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
-        addSection("E: Communication Skills", html);
-      }
-
-      if (Array.isArray(data.compSkills) && data.compSkills.length) {
-        let html = '<ul>' + data.compSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
-        addSection("E: Computer Skills", html);
-      }
-
-      if (data.hobbies) {
-        addSection("F: Interests and Hobbies", `<p>${data.hobbies}</p>`);
-      }
-
-      if (Array.isArray(data.referees)) {
-        let html = data.referees.map(r => `
-          <p><strong>${r[0]}</strong> - ${r[1]}, ${r[2]}<br>
-          Address: ${r[3]}, Contact: ${r[4]}</p>
-        `).join('');
-        addSection("G: Referees", html);
-      }
-
-      if (data.fullname) {
-        addSection("H: Declaration", `<p>I, ${data.fullname}, declare that the above information is true and correct to the best of my knowledge.</p>`);
-      }
+    function goBack() {
+      window.location.href = 'builder.html';
     }
-  </script></body>
+
+    function downloadPDF() {
+      const element = document.getElementById('cvPreview');
+      html2pdf().from(element).save('My_CV.pdf');
+    }
+  </script>
+</body>
 </html>
