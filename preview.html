@@ -106,7 +106,7 @@
       const content = document.getElementById('preview-content');
       const template = data.template || 'classic';
 
-      // Add class to content for template-specific styling
+      // Apply template style
       content.classList.add(template);
 
       if (data.summary) {
@@ -129,18 +129,17 @@
       }
 
       if (Array.isArray(data.education)) {
-        let html = '';
-        data.education.forEach(e => {
-          html += `<p><strong>${e[0]}</strong>, ${e[1]}, ${e[2]}, ${e[3]} - ${e[4]}, Grade: ${e[5]}</p>`;
-        });
+        let html = data.education.map(e => `
+          <p><strong>${e[0]}</strong>: ${e[1]} - ${e[2]} (${e[3]} - ${e[4]}) Grade: ${e[5]}</p>
+        `).join('');
         addSection("B: Educational Background", html);
       }
 
       if (Array.isArray(data.experience)) {
-        let html = '';
-        data.experience.forEach(e => {
-          html += `<p><strong>${e[0]}</strong> at ${e[2]} (${e[1]})<br>Department: ${e[3]}, Position: ${e[4]}, Tel: ${e[5]}</p>`;
-        });
+        let html = data.experience.map(e => `
+          <p><strong>${e[0]}</strong> at ${e[2]} (${e[1]})<br>
+          Department: ${e[3]}, Position: ${e[4]}, Tel: ${e[5]}</p>
+        `).join('');
         addSection("C: Working Experience", html);
       }
 
@@ -148,12 +147,14 @@
         addSection("D: Key Competencies", `<p>${data.competencies}</p>`);
       }
 
-      if (Array.isArray(data.commSkills)) {
-        addSection("E: Communication Skills", `<ul>${data.commSkills.map(s => `<li>${s}</li>`).join('')}</ul>`);
+      if (Array.isArray(data.commSkills) && data.commSkills.length) {
+        let html = '<ul>' + data.commSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
+        addSection("E: Communication Skills", html);
       }
 
-      if (Array.isArray(data.compSkills)) {
-        addSection("E: Computer Skills", `<ul>${data.compSkills.map(s => `<li>${s}</li>`).join('')}</ul>`);
+      if (Array.isArray(data.compSkills) && data.compSkills.length) {
+        let html = '<ul>' + data.compSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
+        addSection("E: Computer Skills", html);
       }
 
       if (data.hobbies) {
@@ -161,10 +162,10 @@
       }
 
       if (Array.isArray(data.referees)) {
-        let html = '';
-        data.referees.forEach(r => {
-          html += `<p><strong>${r[0]}</strong>, ${r[2]}, ${r[1]}<br>Address: ${r[3]}, Contact: ${r[4]}</p>`;
-        });
+        let html = data.referees.map(r => `
+          <p><strong>${r[0]}</strong> - ${r[1]}, ${r[2]}<br>
+          Address: ${r[3]}, Contact: ${r[4]}</p>
+        `).join('');
         addSection("G: Referees", html);
       }
 
