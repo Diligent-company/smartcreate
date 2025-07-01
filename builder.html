@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCV Preview</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartCV Builder</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #f4f8fc;
       margin: 0;
       padding: 0;
@@ -21,166 +21,192 @@
     main {
       max-width: 960px;
       margin: 2rem auto;
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    section {
+      margin-bottom: 2rem;
     }
     h2 {
       color: #004080;
       text-transform: uppercase;
       border-bottom: 2px solid #aad8ff;
-      padding-bottom: 5px;
-      margin-top: 2rem;
+      padding-bottom: 0.3rem;
     }
-    .section {
-      margin-bottom: 1.5rem;
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
-    .download-btn {
-      display: block;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .download-btn a {
+    button {
       background-color: #004080;
       color: white;
-      padding: 0.75rem 1.5rem;
-      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: none;
       border-radius: 6px;
+      cursor: pointer;
       font-weight: bold;
+      margin-top: 1rem;
     }
-    .download-btn a:hover {
+    button:hover {
       background-color: #0060b8;
     }
-    footer a {
-      color: #aad8ff;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
-    .modern h2 {
-      color: #0060b8;
-      font-size: 1.2rem;
-      text-transform: none;
-    }
-    .elegant {
-      font-family: Georgia, serif;
-      background-color: #fcfcfc;
-      color: #222;
-    }
-    .elegant h2 {
-      font-family: 'Garamond', serif;
-      font-style: italic;
-      font-size: 1.4rem;
-      color: #555;
+    .multi-input {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border: 1px dashed #ccc;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>CV Preview</h1>
-    <p>Here is your completed CV</p>
+    <h1>SmartCV Builder</h1>
+    <p>Fill in your CV details below</p>
   </header>
 
-  <main id="preview-content"></main>
+  <main>
+    <form id="cvForm">
+      <section>
+        <h2>Select Template</h2>
+        <select name="template" required>
+          <option value="classic">Classic</option>
+          <option value="modern">Modern</option>
+          <option value="elegant">Elegant</option>
+        </select>
+      </section>
 
-  <div class="download-btn">
-    <a href="#" onclick="window.print(); return false;">Download as PDF</a>
-  </div>
+      <section>
+        <h2>Personal Summary</h2>
+        <textarea name="summary" rows="4" placeholder="Brief summary about yourself"></textarea>
+      </section>
+
+      <section>
+        <h2>Personal Information</h2>
+        <input type="text" name="fullname" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email" />
+        <input type="tel" name="phone" placeholder="Phone" />
+        <input type="text" name="address" placeholder="Address" />
+        <input type="text" name="nationality" placeholder="Nationality" />
+        <input type="text" name="dob" placeholder="Date of Birth" />
+        <input type="text" name="gender" placeholder="Gender" />
+        <input type="text" name="marital_status" placeholder="Marital Status" />
+        <input type="text" name="language" placeholder="Languages" />
+        <input type="text" name="linkedin" placeholder="LinkedIn or Website" />
+      </section>
+
+      <section>
+        <h2>Education Background</h2>
+        <div id="educationContainer"></div>
+        <button type="button" onclick="addEducation()">+ Add Education</button>
+      </section>
+
+      <section>
+        <h2>Working Experience</h2>
+        <div id="experienceContainer"></div>
+        <button type="button" onclick="addExperience()">+ Add Experience</button>
+      </section>
+
+      <section>
+        <h2>Key Competencies</h2>
+        <textarea name="competencies" rows="3" placeholder="Your key competencies"></textarea>
+      </section>
+
+      <section>
+        <h2>Communication Skills</h2>
+        <div id="commSkills"></div>
+        <button type="button" onclick="addSkill('commSkills', 'Communication Skill')">+ Add</button>
+
+        <h2>Computer Skills</h2>
+        <div id="compSkills"></div>
+        <button type="button" onclick="addSkill('compSkills', 'Computer Skill')">+ Add</button>
+      </section>
+
+      <section>
+        <h2>Interests and Hobbies</h2>
+        <textarea name="hobbies" rows="3" placeholder="Your hobbies and interests"></textarea>
+      </section>
+
+      <section>
+        <h2>Referees</h2>
+        <div id="refereeContainer"></div>
+        <button type="button" onclick="addReferee()">+ Add Referee</button>
+      </section>
+
+      <button type="submit">Preview My CV</button>
+    </form>
+  </main>
 
   <footer>
-    <p>
-      <a href="index.html">Home</a> |
-      <a href="about.html">About Us</a> |
-      <a href="contact.html">Contact</a> |
-      <a href="faqs.html">FAQs</a> |
-      <a href="terms.html">Terms</a> |
-      <a href="privacy.html">Privacy Policy</a>
-    </p>
     <p>&copy; 2025 SmartCV. All rights reserved.</p>
   </footer>
 
   <script>
-    function addSection(title, html) {
-      const container = document.createElement('div');
-      container.className = 'section';
-      container.innerHTML = `<h2>${title}</h2>${html}`;
-      document.getElementById('preview-content').appendChild(container);
+    const form = document.getElementById('cvForm');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      data.education = getMultiValues('educationContainer');
+      data.experience = getMultiValues('experienceContainer');
+      data.commSkills = getSkillValues('commSkills');
+      data.compSkills = getSkillValues('compSkills');
+      data.referees = getMultiValues('refereeContainer');
+
+      localStorage.setItem('cvData', JSON.stringify(data));
+      window.location.href = 'preview.html';
+    });
+
+    function createInputs(placeholders) {
+      return placeholders.map(ph => `<input type="text" placeholder="${ph}" required />`).join('');
     }
 
-    window.onload = function() {
-      const data = JSON.parse(localStorage.getItem('cvData')) || {};
-      const content = document.getElementById('preview-content');
-      const template = data.template || 'classic';
+    function getMultiValues(containerId) {
+      const sets = document.querySelectorAll(`#${containerId} .multi-input`);
+      return Array.from(sets).map(set => {
+        const inputs = set.querySelectorAll('input');
+        return Array.from(inputs).map(input => input.value.trim());
+      });
+    }
 
-      // Apply template style
-      content.classList.add(template);
+    function getSkillValues(id) {
+      return Array.from(document.querySelectorAll(`#${id} input`))
+        .map(i => i.value.trim())
+        .filter(Boolean);
+    }
 
-      if (data.summary) {
-        addSection("A: Personal Summary", `<p>${data.summary}</p>`);
-      }
+    function addEducation() {
+      const div = document.createElement('div');
+      div.className = 'multi-input';
+      div.innerHTML = createInputs(["Level", "School/University", "Award", "Start Year", "End Year", "Grades"]);
+      document.getElementById('educationContainer').appendChild(div);
+    }
 
-      if (data.fullname || data.email || data.phone) {
-        addSection("Personal Information", `
-          <p><strong>Name:</strong> ${data.fullname || ''}</p>
-          <p><strong>Email:</strong> ${data.email || ''}</p>
-          <p><strong>Phone:</strong> ${data.phone || ''}</p>
-          <p><strong>Address:</strong> ${data.address || ''}</p>
-          <p><strong>Nationality:</strong> ${data.nationality || ''}</p>
-          <p><strong>Date of Birth:</strong> ${data.dob || ''}</p>
-          <p><strong>Gender:</strong> ${data.gender || ''}</p>
-          <p><strong>Marital Status:</strong> ${data.marital_status || ''}</p>
-          <p><strong>Languages:</strong> ${data.language || ''}</p>
-          <p><strong>LinkedIn/Website:</strong> ${data.linkedin || ''}</p>
-        `);
-      }
+    function addExperience() {
+      const div = document.createElement('div');
+      div.className = 'multi-input';
+      div.innerHTML = createInputs(["Job Title", "Time", "Institution", "Department", "Position", "Office Tel"]);
+      document.getElementById('experienceContainer').appendChild(div);
+    }
 
-      if (Array.isArray(data.education)) {
-        let html = data.education.map(e => `
-          <p><strong>${e[0]}</strong>: ${e[1]} - ${e[2]} (${e[3]} - ${e[4]}) Grade: ${e[5]}</p>
-        `).join('');
-        addSection("B: Educational Background", html);
-      }
+    function addReferee() {
+      const div = document.createElement('div');
+      div.className = 'multi-input';
+      div.innerHTML = createInputs(["Name", "Organization", "Position", "Address", "Contact"]);
+      document.getElementById('refereeContainer').appendChild(div);
+    }
 
-      if (Array.isArray(data.experience)) {
-        let html = data.experience.map(e => `
-          <p><strong>${e[0]}</strong> at ${e[2]} (${e[1]})<br>
-          Department: ${e[3]}, Position: ${e[4]}, Tel: ${e[5]}</p>
-        `).join('');
-        addSection("C: Working Experience", html);
-      }
-
-      if (data.competencies) {
-        addSection("D: Key Competencies", `<p>${data.competencies}</p>`);
-      }
-
-      if (Array.isArray(data.commSkills) && data.commSkills.length) {
-        let html = '<ul>' + data.commSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
-        addSection("E: Communication Skills", html);
-      }
-
-      if (Array.isArray(data.compSkills) && data.compSkills.length) {
-        let html = '<ul>' + data.compSkills.map(skill => `<li>${skill}</li>`).join('') + '</ul>';
-        addSection("E: Computer Skills", html);
-      }
-
-      if (data.hobbies) {
-        addSection("F: Interests and Hobbies", `<p>${data.hobbies}</p>`);
-      }
-
-      if (Array.isArray(data.referees)) {
-        let html = data.referees.map(r => `
-          <p><strong>${r[0]}</strong> - ${r[1]}, ${r[2]}<br>
-          Address: ${r[3]}, Contact: ${r[4]}</p>
-        `).join('');
-        addSection("G: Referees", html);
-      }
-
-      if (data.fullname) {
-        addSection("H: Declaration", `<p>I, ${data.fullname}, declare that the above information is true and correct to the best of my knowledge.</p>`);
-      }
+    function addSkill(containerId, placeholder) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = placeholder;
+      document.getElementById(containerId).appendChild(input);
     }
   </script>
 </body>
