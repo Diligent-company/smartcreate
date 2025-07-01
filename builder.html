@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCV Preview</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f8fc;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header, footer {
+      background-color: #004080;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+    main {
+      max-width: 960px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #004080;
+      text-transform: uppercase;
+      border-bottom: 2px solid #aad8ff;
+      padding-bottom: 5px;
+      margin-top: 2rem;
+    }
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    .download-btn {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .download-btn a {
+      background-color: #004080;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .download-btn a:hover {
+      background-color: #0060b8;
+    }
+    footer a {
+      color: #aad8ff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .modern h2 {
+      color: #0060b8;
+      font-size: 1.2rem;
+      text-transform: none;
+    }
+    .elegant {
+      font-family: Georgia, serif;
+      background-color: #fcfcfc;
+      color: #222;
+    }
+    .elegant h2 {
+      font-family: 'Garamond', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CV Preview</h1>
+    <p>Here is your completed CV</p>
+  </header>  <main id="preview-content"></main>  <div class="download-btn">
+    <a href="#" onclick="window.print(); return false;">Download as PDF</a>
+  </div>  <footer>
+    <p>
+      <a href="index.html">Home</a> |
+      <a href="about.html">About Us</a> |
+      <a href="contact.html">Contact</a> |
+      <a href="faqs.html">FAQs</a> |
+      <a href="terms.html">Terms</a> |
+      <a href="privacy.html">Privacy Policy</a>
+    </p>
+    <p>&copy; 2025 SmartCV. All rights reserved.</p>
+  </footer>  <script>
+    function addSection(title, html) {
+      const container = document.createElement('div');
+      container.className = 'section';
+      container.innerHTML = `<h2>${title}</h2>${html}`;
+      document.getElementById('preview-content').appendChild(container);
+    }
+
+    window.onload = function() {
+      const data = JSON.parse(localStorage.getItem('cvData')) || {};
+      const content = document.getElementById('preview-content');
+      const template = data.template || 'classic';
+
+      // Add class to content for template-specific styling
+      content.classList.add(template);
+
+      if (data.summary) {
+        addSection("A: Personal Summary", `<p>${data.summary}</p>`);
+      }
+
+      if (data.fullname || data.email || data.phone) {
+        addSection("Personal Information", `
+          <p><strong>Name:</strong> ${data.fullname || ''}</p>
+          <p><strong>Email:</strong> ${data.email || ''}</p>
+          <p><strong>Phone:</strong> ${data.phone || ''}</p>
+          <p><strong>Address:</strong> ${data.address || ''}</p>
+          <p><strong>Nationality:</strong> ${data.nationality || ''}</p>
+          <p><strong>Date of Birth:</strong> ${data.dob || ''}</p>
+          <p><strong>Gender:</strong> ${data.gender || ''}</p>
+          <p><strong>Marital Status:</strong> ${data.marital_status || ''}</p>
+          <p><strong>Languages:</strong> ${data.language || ''}</p>
+          <p><strong>LinkedIn/Website:</strong> ${data.linkedin || ''}</p>
+        `);
+      }
+
+      if (Array.isArray(data.education)) {
+        let html = '';
+        data.education.forEach(e => {
+          html += `<p><strong>${e[0]}</strong>, ${e[1]}, ${e[2]}, ${e[3]} - ${e[4]}, Grade: ${e[5]}</p>`;
+        });
+        addSection("B: Educational Background", html);
+      }
+
+      if (Array.isArray(data.experience)) {
+        let html = '';
+        data.experience.forEach(e => {
+          html += `<p><strong>${e[0]}</strong> at ${e[2]} (${e[1]})<br>Department: ${e[3]}, Position: ${e[4]}, Tel: ${e[5]}</p>`;
+        });
+        addSection("C: Working Experience", html);
+      }
+
+      if (data.competencies) {
+        addSection("D: Key Competencies", `<p>${data.competencies}</p>`);
+      }
+
+      if (Array.isArray(data.commSkills)) {
+        addSection("E: Communication Skills", `<ul>${data.commSkills.map(s => `<li>${s}</li>`).join('')}</ul>`);
+      }
+
+      if (Array.isArray(data.compSkills)) {
+        addSection("E: Computer Skills", `<ul>${data.compSkills.map(s => `<li>${s}</li>`).join('')}</ul>`);
+      }
+
+      if (data.hobbies) {
+        addSection("F: Interests and Hobbies", `<p>${data.hobbies}</p>`);
+      }
+
+      if (Array.isArray(data.referees)) {
+        let html = '';
+        data.referees.forEach(r => {
+          html += `<p><strong>${r[0]}</strong>, ${r[2]}, ${r[1]}<br>Address: ${r[3]}, Contact: ${r[4]}</p>`;
+        });
+        addSection("G: Referees", html);
+      }
+
+      if (data.fullname) {
+        addSection("H: Declaration", `<p>I, ${data.fullname}, declare that the above information is true and correct to the best of my knowledge.</p>`);
+      }
+    }
+  </script></body>
+</html>
