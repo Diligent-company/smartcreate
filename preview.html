@@ -40,7 +40,25 @@
     .section {
       margin-bottom: 2rem;
     }
+    .declaration {
+      margin-top: 3rem;
+      font-style: italic;
+    }
+    .print-btn {
+      display: inline-block;
+      background: #004080;
+      color: #fff;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
     @media print {
+      .print-btn {
+        display: none;
+      }
       body {
         font-size: 14pt;
       }
@@ -51,6 +69,7 @@
   </style>
 </head>
 <body>
+  <button class="print-btn" onclick="window.print()">Print or Save as PDF</button>
   <div id="cvContent"></div>  <script>
     const data = JSON.parse(localStorage.getItem('cvData'));
     const content = document.getElementById('cvContent');
@@ -96,6 +115,10 @@
       ${createSection('Key Competencies', createList(data.competencies || []))}
       ${createSection('Interests and Hobbies', createList(data.interests || []))}
       ${createSection('Referees', createList(data.referees || []))}
+      <div class="declaration">
+        <p>I declare that the information provided above is true and correct to the best of my knowledge and belief.</p>
+        <p style="margin-top: 1rem;"><strong>Full Name:</strong> ${data.fullname || ''}</p>
+      </div>
     `;
   </script></body>
 </html>
