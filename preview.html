@@ -1,155 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV Preview</title>
   <style>
-    :root {
-      --primary: #004080;
-      --background: #f4f8fc;
-    }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: var(--background);
       margin: 0;
-      padding: 0;
-      color: #333;
+      padding: 2rem;
+      background: #fff;
+      color: #222;
+      line-height: 1.6;
+      font-size: 16px;
     }
-    header, footer {
-      background-color: var(--primary);
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    main {
-      max-width: 960px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    h1, h2 {
+      color: #004080;
     }
     h2 {
-      color: var(--primary);
-      border-bottom: 1px solid #ccc;
+      border-bottom: 2px solid #004080;
       padding-bottom: 0.3rem;
       margin-top: 2rem;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+    }
     ul {
-      padding-left: 1.2rem;
+      padding-left: 1.5rem;
+      list-style-type: disc;
     }
-    .label {
-      font-weight: bold;
+    .section {
+      margin-bottom: 2rem;
     }
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-    }
-    button {
-      background-color: var(--primary);
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background-color: #0060b8;
-    }
-
-    /* Template styles */
-    body.template-classic {
-      --primary: #004080;
-      --background: #f4f8fc;
-    }
-    body.template-modern {
-      --primary: #2c3e50;
-      --background: #ecf0f1;
-    }
-    body.template-elegant {
-      --primary: #6a1b9a;
-      --background: #f3e5f5;
+    @media print {
+      body {
+        font-size: 14pt;
+      }
+      h1, h2 {
+        page-break-after: avoid;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>CV Preview</h1>
-    <p>Your selected template: <span id="templateName"></span></p>
-  </header>
-
-  <main id="cvPreview">
-    <!-- CV Content will go here -->
-  </main>
-
-  <div class="buttons" style="max-width: 960px; margin: auto;">
-    <button onclick="goBack()">← Go Back</button>
-    <button onclick="downloadPDF()">⬇ Download PDF</button>
-  </div>
-
-  <footer>
-    <p>&copy; 2025 SmartCV. All rights reserved.</p>
-  </footer>
-
-  <!-- html2pdf CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <script>
+  <div id="cvContent"></div>  <script>
     const data = JSON.parse(localStorage.getItem('cvData'));
-    const preview = document.getElementById('cvPreview');
-    const templateDisplay = document.getElementById('templateName');
+    const content = document.getElementById('cvContent');
 
-    if (!data) {
-      preview.innerHTML = "<p>No CV data found. Please go back and fill out the form.</p>";
-    } else {
-      // Apply template style to body
-      document.body.classList.add('template-' + data.template);
-
-      templateDisplay.textContent = data.template;
-
-      function createList(title, items) {
-        if (!items || items.length === 0) return '';
-        const htmlItems = items.map(entry => `<li>${Array.isArray(entry) ? entry.join(' - ') : entry}</li>`).join('');
-        return `<h2>${title}</h2><ul>${htmlItems}</ul>`;
-      }
-
-      preview.innerHTML = `
-        <h2>Personal Information</h2>
-        <p><span class="label">Full Name:</span> ${data.fullname}</p>
-        <p><span class="label">Email:</span> ${data.email}</p>
-        <p><span class="label">Phone:</span> ${data.phone}</p>
-        <p><span class="label">Address:</span> ${data.address}</p>
-        <p><span class="label">Nationality:</span> ${data.nationality}</p>
-        <p><span class="label">Date of Birth:</span> ${data.dob}</p>
-        <p><span class="label">Gender:</span> ${data.gender}</p>
-        <p><span class="label">Marital Status:</span> ${data.marital_status}</p>
-        <p><span class="label">Languages:</span> ${data.language}</p>
-        <p><span class="label">LinkedIn / Website:</span> ${data.linkedin}</p>
-
-        <h2>Personal Summary</h2>
-        <p>${data.summary || 'N/A'}</p>
-
-        ${createList('Education Background', data.education)}
-        ${createList('Work Experience', data.experience)}
-        ${createList('Key Competencies', [data.competencies])}
-        ${createList('Communication Skills', data.commSkills)}
-        ${createList('Computer Skills', data.compSkills)}
-        ${createList('Hobbies and Interests', [data.hobbies])}
-        ${createList('Referees', data.referees)}
-      `;
+    function createSection(title, html) {
+      return `<div class="section"><h2>${title}</h2>${html}</div>`;
     }
 
-    function goBack() {
-      window.location.href = 'builder.html';
+    function createTable(headers, rows) {
+      const thead = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>`;
+      const tbody = `<tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>`;
+      return `<table>${thead}${tbody}</table>`;
     }
 
-    function downloadPDF() {
-      const element = document.getElementById('cvPreview');
-      html2pdf().from(element).save('My_CV.pdf');
+    function createList(items) {
+      return `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
     }
-  </script>
-</body>
+
+    content.innerHTML = `
+      <h1>${data.fullname || 'Your Name'}</h1>
+      ${createSection('Personal Summary', `<p>${data.summary || ''}</p>`)}
+      ${createSection('Personal Information', `
+        <p><strong>Email:</strong> ${data.email || ''}</p>
+        <p><strong>Phone:</strong> ${data.phone || ''}</p>
+        <p><strong>Address:</strong> ${data.address || ''}</p>
+        <p><strong>Nationality:</strong> ${data.nationality || ''}</p>
+        <p><strong>Date of Birth:</strong> ${data.dob || ''}</p>
+        <p><strong>Gender:</strong> ${data.gender || ''}</p>
+        <p><strong>Marital Status:</strong> ${data.marital_status || ''}</p>
+        <p><strong>Languages:</strong> ${data.language || ''}</p>
+        <p><strong>LinkedIn/Website:</strong> ${data.linkedin || ''}</p>
+      `)}
+      ${createSection('Education Background', createTable(
+        ['Level', 'Institution', 'Award', 'Year', 'Grades'],
+        data.education || []
+      ))}
+      ${createSection('Working Experience', data.experience ? createTable(
+        ['Job Title', 'Time', 'Institution', 'Department', 'Position', 'Office Tel'],
+        data.experience
+      ) : '')}
+      ${createSection('Language Skills', createTable(['Language', 'Speaking', 'Writing'], data.languageSkills || []))}
+      ${createSection('Computer Skills', createTable(['Software', 'Proficiency'], data.computerSkills || []))}
+      ${createSection('Key Competencies', createList(data.competencies || []))}
+      ${createSection('Interests and Hobbies', createList(data.interests || []))}
+      ${createSection('Referees', createList(data.referees || []))}
+    `;
+  </script></body>
 </html>
