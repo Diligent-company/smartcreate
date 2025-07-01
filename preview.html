@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,8 +84,8 @@
   <div id="cvPreview">
     <p>Loading your CV...</p>
   </div>
-  <div id="downloadBtn" style="text-align:center; display:none;">
-    <button class="btn-download" onclick="downloadPDF()">Download as PDF</button>
+  <div id="downloadBtn" style="text-align:center; margin-top:20px;">
+    <button class="btn-download" onclick="payThenDownload()">Download CV</button>
   </div>
 </main>
 <footer class="page-footer">
@@ -102,61 +103,72 @@
   </div>
 </footer>
 <script>
-  const paid = new URLSearchParams(window.location.search).get("paid");
-  const data = JSON.parse(localStorage.getItem("cvData") || '{}');const section = (title, content) =>  <div class="cv-section"> <h2>${title}</h2> ${content} </div>;
+  const data = JSON.parse(localStorage.getItem("cvData") || '{}');
 
-const list = (items) => <ul>${items.map(i => <li>${i}</li>).join('')}</ul>;
+  const section = (title, content) => `
+    <div class="cv-section">
+      <h2>${title}</h2>
+      ${content}
+    </div>`;
 
-const table = (dataArray, headers) => { let rows = dataArray.map(row => <tr>${row.map(cell => <td>${cell}</td>).join('')}</tr>).join(''); return <table border="1" width="100%"><tr>${headers.map(h => <th>${h}</th>).join('')}</tr>${rows}</table>; };
+  const list = (items) => `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
 
-const generateCV = () => { if (!data.fullname) return document.getElementById("cvPreview").innerHTML = "<p>No data found.</p>"; let html = <h1>${data.fullname}</h1>; html += section("PERSONAL SUMMARY", <p>${data.summary || ''}</p>);
+  const table = (dataArray, headers) => {
+    let rows = dataArray.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('');
+    return `<table border="1" width="100%"><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>${rows}</table>`;
+  };
 
-const personalInfo = [
-  ["Email", data.email],
-  ["Phone", data.phone],
-  ["Address", data.address],
-  ["Nationality", data.nationality],
-  ["Date of Birth", data.dob],
-  ["Gender", data.gender],
-  ["Marital Status", data.marital_status],
-  ["Languages", data.language],
-  ["LinkedIn", data.linkedin]
-];
-html += section("PERSONAL INFORMATION", list(personalInfo.map(([k, v]) => `${k}: ${v || ''}`)));
+  const generateCV = () => {
+    if (!data.fullname) return document.getElementById("cvPreview").innerHTML = "<p>No data found.</p>";
+    let html = `<h1>${data.fullname}</h1>`;
+    html += section("PERSONAL SUMMARY", `<p>${data.summary || ''}</p>`);
 
-if (data.education?.length > 0) {
-  html += section("EDUCATIONAL BACKGROUND", table(data.education, ["Level", "School/University", "Award", "Year", "Grades"]));
-}
+    const personalInfo = [
+      ["Email", data.email],
+      ["Phone", data.phone],
+      ["Address", data.address],
+      ["Nationality", data.nationality],
+      ["Date of Birth", data.dob],
+      ["Gender", data.gender],
+      ["Marital Status", data.marital_status],
+      ["Languages", data.language],
+      ["NIDA", data.linkedin]
+    ];
+    html += section("PERSONAL INFORMATION", list(personalInfo.map(([k, v]) => `${k}: ${v || ''}`)));
 
-if (data.experience?.length > 0) {
-  html += section("WORKING EXPERIENCE", table(data.experience, ["Title", "Time", "Institution", "Department", "Position", "Office Tel"]));
-}
+    if (data.education?.length > 0) {
+      html += section("EDUCATIONAL BACKGROUND", table(data.education, ["Level", "School/University", "Award", "Year", "Grades"]));
+    }
 
-if (data.competencies?.length > 0) {
-  html += section("KEY COMPETENCIES", list(data.competencies));
-}
-if (data.languageSkills?.length > 0) {
-  html += section("LANGUAGE SKILLS", table(data.languageSkills, ["Language", "Speaking", "Writing"]));
-}
-if (data.computerSkills?.length > 0) {
-  html += section("COMPUTER SKILLS", table(data.computerSkills, ["Software", "Proficiency"]));
-}
-if (data.interests?.length > 0) {
-  html += section("INTERESTS AND HOBBIES", list(data.interests));
-}
-if (data.referees?.length > 0) {
-  html += section("REFEREES", table(data.referees, ["Name", "Position", "Organization", "Contact", "Address"]));
-}
-html += section("DECLARATION", `<p>I, ${data.fullname}, hereby declare that the information given above is true to the best of my knowledge and belief.</p>`);
-document.getElementById("cvPreview").innerHTML = html;
-if (paid === "true") document.getElementById("downloadBtn").style.display = "block";
-else document.getElementById("downloadBtn").innerHTML = '<p style="color:red">Please complete payment to download your CV.</p>';
+    if (data.experience?.length > 0) {
+      html += section("WORKING EXPERIENCE", table(data.experience, ["Title", "Time", "Institution", "Department", "Position", "Office Tel"]));
+    }
 
-};
+    if (data.competencies?.length > 0) {
+      html += section("KEY COMPETENCIES", list(data.competencies));
+    }
+    if (data.languageSkills?.length > 0) {
+      html += section("LANGUAGE SKILLS", table(data.languageSkills, ["Language", "Speaking", "Writing"]));
+    }
+    if (data.computerSkills?.length > 0) {
+      html += section("COMPUTER SKILLS", table(data.computerSkills, ["Software", "Proficiency"]));
+    }
+    if (data.interests?.length > 0) {
+      html += section("INTERESTS AND HOBBIES", list(data.interests));
+    }
+    if (data.referees?.length > 0) {
+      const refereeBullets = data.referees.map(r => `<li>${r}</li>`).join('');
+      html += section("REFEREES", `<ul>${refereeBullets}</ul>`);
+    }
+    html += section("DECLARATION", `<p>I, ${data.fullname}, hereby declare that the information given above is true to the best of my knowledge and belief.</p>`);
+    document.getElementById("cvPreview").innerHTML = html;
+  };
 
-function downloadPDF() { const printContents = document.getElementById('cvPreview').innerHTML; const original = document.body.innerHTML; document.body.innerHTML = printContents; window.print(); document.body.innerHTML = original; window.location.reload(); }
+  function payThenDownload() {
+    window.location.href = "https://checkout.clickpesa.com/payment-page?ref=PYP3CP7980";
+  }
 
-generateCV(); </script>
-
+  generateCV();
+</script>
 </body>
 </html>
