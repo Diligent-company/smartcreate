@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartCV Builder</title>
   <style>
     body {
@@ -12,11 +11,40 @@
       padding: 0;
       color: #333;
     }
-    header, footer {
+    header.page-header {
       background-color: #004080;
       color: white;
       text-align: center;
       padding: 1rem;
+    }
+    footer.page-footer {
+      background: #002244;
+      color: white;
+      padding: 30px 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.95em;
+      margin-top: 40px;
+    }
+    footer.page-footer div {
+      margin: 10px 0;
+      min-width: 150px;
+    }
+    footer.page-footer h4 {
+      margin-bottom: 10px;
+      color: #ffffff;
+      border-bottom: 1px solid #777;
+      padding-bottom: 5px;
+    }
+    footer.page-footer a {
+      display: block;
+      color: #ddd;
+      text-decoration: none;
+      margin: 5px 0;
+    }
+    footer.page-footer a:hover {
+      color: #fff;
     }
     main {
       max-width: 960px;
@@ -31,216 +59,139 @@
     }
     h2 {
       color: #004080;
+      text-transform: uppercase;
       border-bottom: 2px solid #aad8ff;
       padding-bottom: 0.3rem;
-      margin-bottom: 1rem;
-      text-transform: uppercase;
     }
     input, textarea, select {
+      width: 100%;
       padding: 0.5rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 1rem;
-    }
-    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-      width: 100%;
     }
     button {
       background-color: #004080;
       color: white;
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      margin-top: 1rem;
-    }
-    button:hover {
-      background-color: #0060b8;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 0.5rem;
-      text-align: left;
-    }
-    ul {
-      padding-left: 1.2rem;
       margin-top: 0.5rem;
     }
-    .multi-input {
+    .multi-input, .bullet-section {
+      margin-bottom: 1.2rem;
+      border: 1px dashed #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .row {
       display: flex;
       gap: 1rem;
-      margin-bottom: 0.5rem;
     }
-    .multi-input input,
-    .multi-input select {
+    .row > div {
       flex: 1;
+    }
+    @media print {
+      header.page-header,
+      footer.page-footer {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
+  <header class="page-header">
     <h1>SmartCV Builder</h1>
-    <p>Build your CV quickly and smartly</p>
-  </header>
-
-  <main>
+    <p>Your gateway to a professional CV</p>
+  </header>  <main>
     <form id="cvForm">
-
-      <!-- Template -->
       <section>
         <h2>Select Template</h2>
-        <select name="template" required>
+        <select name="template">
           <option value="classic">Classic</option>
           <option value="modern">Modern</option>
           <option value="elegant">Elegant</option>
         </select>
-      </section>
+      </section><section>
+    <h2>Personal Summary</h2>
+    <textarea name="summary" rows="4" placeholder="Write a brief summary about yourself"></textarea>
+  </section>
 
-      <!-- Personal Summary -->
-      <section>
-        <h2>Personal Summary</h2>
-        <textarea name="summary" rows="4" placeholder="Brief summary about yourself"></textarea>
-      </section>
+  <section>
+    <h2>Personal Information</h2>
+    <input type="text" name="fullname" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email">
+    <input type="tel" name="phone" placeholder="Phone">
+    <input type="text" name="address" placeholder="Address">
+    <input type="text" name="nationality" placeholder="Nationality">
+    <input type="text" name="dob" placeholder="Date of Birth">
+    <input type="text" name="gender" placeholder="Gender">
+    <input type="text" name="marital_status" placeholder="Marital Status">
+    <input type="text" name="language" placeholder="Languages">
+    <input type="text" name="linkedin" placeholder="LinkedIn or Website">
+  </section>
 
-      <!-- Personal Info -->
-      <section>
-        <h2>Personal Information</h2>
-        <input type="text" name="fullname" placeholder="Full Name" required />
-        <input type="email" name="email" placeholder="Email" />
-        <input type="tel" name="phone" placeholder="Phone" />
-        <input type="text" name="address" placeholder="Address" />
-        <input type="text" name="nationality" placeholder="Nationality" />
-        <input type="text" name="dob" placeholder="Date of Birth" />
-        <input type="text" name="gender" placeholder="Gender" />
-        <input type="text" name="marital_status" placeholder="Marital Status" />
-        <input type="text" name="language" placeholder="Other Languages" />
-        <input type="numbers" name="NIDA" placeholder="NIDA" />
-      </section>
+  <section>
+    <h2>Education Background</h2>
+    <div id="educationContainer"></div>
+    <button type="button" onclick="addEducation()">+ Add Education</button>
+  </section>
 
-      <!-- Education -->
-      <section>
-        <h2>Education Background</h2>
-        <table id="educationTable">
-          <thead>
-            <tr>
-              <th>Level</th>
-              <th>Institution</th>
-              <th>Award</th>
-              <th>Year (Start - End)</th>
-              <th>Grades</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="multi-input">
-          <input type="text" placeholder="Level" id="eduLevel" />
-          <input type="text" placeholder="Institution" id="eduInstitution" />
-          <input type="text" placeholder="Award" id="eduAward" />
-          <input type="text" placeholder="Start-End (e.g. 2015-2019)" id="eduYears" />
-          <input type="text" placeholder="Grades" id="eduGrades" />
-        </div>
-        <button type="button" onclick="addEducation()">+ Add Education</button>
-      </section>
+  <section>
+    <h2>Working Experience</h2>
+    <div id="experienceContainer"></div>
+    <button type="button" onclick="addExperience()">+ Add Experience</button>
+  </section>
 
-      <!-- Language Skills -->
-      <section>
-        <h2>Language Skills</h2>
-        <table id="languageSkills">
-          <thead>
-            <tr>
-              <th>Language</th>
-              <th>Speaking</th>
-              <th>Writing</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="multi-input">
-          <input type="text" id="langName" placeholder="Language" />
-          <select id="langSpeak">
-            <option value="">Speaking</option>
-            <option>Basic</option>
-            <option>Intermediate</option>
-            <option>Fluent</option>
-            <option>Native</option>
-          </select>
-          <select id="langWrite">
-            <option value="">Writing</option>
-            <option>Basic</option>
-            <option>Intermediate</option>
-            <option>Fluent</option>
-            <option>Native</option>
-          </select>
-        </div>
-        <button type="button" onclick="addLanguage()">+ Add Language</button>
-      </section>
+  <section>
+    <h2>Key Competencies</h2>
+    <div id="competenciesList" class="bullet-section"></div>
+    <button type="button" onclick="addBullet('competenciesList', 'Key Competency')">+ Add Competency</button>
+  </section>
 
-      <!-- Computer Skills -->
-      <section>
-        <h2>Computer Skills</h2>
-        <table id="computerSkills">
-          <thead>
-            <tr>
-              <th>Software</th>
-              <th>Proficiency</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="multi-input">
-          <input type="text" id="compSkillName" placeholder="e.g. MS Office" />
-          <select id="compSkillLevel">
-            <option value="">Level</option>
-            <option>Basic</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
-          </select>
-        </div>
-        <button type="button" onclick="addComputerSkill()">+ Add Computer Skill</button>
-      </section>
+  <section>
+    <h2>Language Skills</h2>
+    <div id="languageSkillsContainer"></div>
+    <button type="button" onclick="addLanguageSkill()">+ Add Language Skill</button>
+  </section>
 
-      <!-- Key Competencies -->
-      <section>
-        <h2>Key Competencies</h2>
-        <ul id="competencyList"></ul>
-        <input type="text" id="competencyInput" placeholder="Enter competency" />
-        <button type="button" onclick="addCompetency()">+ Add Competency</button>
-      </section>
+  <section>
+    <h2>Computer Skills</h2>
+    <div id="computerSkillsContainer"></div>
+    <button type="button" onclick="addComputerSkill()">+ Add Computer Skill</button>
+  </section>
 
-      <!-- Interests -->
-      <section>
-        <h2>Interests and Hobbies</h2>
-        <ul id="interestList"></ul>
-        <input type="text" id="interestInput" placeholder="Enter interest or hobby" />
-        <button type="button" onclick="addInterest()">+ Add Interest</button>
-      </section>
+  <section>
+    <h2>Interests and Hobbies</h2>
+    <div id="interestsList" class="bullet-section"></div>
+    <button type="button" onclick="addBullet('interestsList', 'Interest or Hobby')">+ Add Interest</button>
+  </section>
 
-      <!-- Referees -->
-      <section>
-        <h2>Referees</h2>
-        <ul id="refereeList"></ul>
-        <input type="text" id="refereeInput" placeholder="e.g. John Doe - ABC Ltd - Manager - 0712xxxxxx" />
-        <button type="button" onclick="addReferee()">+ Add Referee</button>
-      </section>
+  <section>
+    <h2>Referees</h2>
+    <div id="refereesList" class="bullet-section"></div>
+    <button type="button" onclick="addBullet('refereesList', 'Referee Details')">+ Add Referee</button>
+  </section>
 
-      <button type="submit">Preview My CV</button>
-    </form>
-  </main>
+  <button type="submit">Preview My CV</button>
+</form>
 
-  <footer>
-    <p>&copy; 2025 SmartCV. All rights reserved.</p>
-  </footer>
-
-  <script>
+  </main>  <footer class="page-footer">
+    <div>
+      <h4>Navigation</h4>
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <a href="faqs.html">FAQs</a>
+      <a href="terms.html">Terms & Conditions</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>  <script>
     const form = document.getElementById('cvForm');
 
     form.addEventListener('submit', function (e) {
@@ -248,97 +199,89 @@
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
-      // Add dynamic entries
-      data.education = getTableData("educationTable");
-      data.languageSkills = getTableData("languageSkills");
-      data.computerSkills = getTableData("computerSkills");
-      data.competencies = getList("competencyList");
-      data.interests = getList("interestList");
-      data.referees = getList("refereeList");
+      data.education = getMultiValues('educationContainer', 5);
+      data.experience = getMultiValues('experienceContainer', 6);
+      data.competencies = getListValues('competenciesList');
+      data.interests = getListValues('interestsList');
+      data.referees = getListValues('refereesList');
+      data.languageSkills = getSkillTableValues('languageSkillsContainer', ['Language', 'Speaking', 'Writing']);
+      data.computerSkills = getSkillTableValues('computerSkillsContainer', ['Software', 'Proficiency']);
 
       localStorage.setItem('cvData', JSON.stringify(data));
       window.location.href = 'preview.html';
     });
 
-    function getTableData(id) {
-      const rows = document.querySelectorAll(`#${id} tbody tr`);
-      return Array.from(rows).map(row => Array.from(row.children).map(cell => cell.textContent.trim()));
+    function createInputs(placeholders) {
+      return placeholders.map(ph => `<input type="text" placeholder="${ph}" required>`).join('');
     }
 
-    function getList(id) {
-      return Array.from(document.querySelectorAll(`#${id} li`)).map(li => li.textContent.trim());
-    }
-
-    function addRowToTable(tableId, values) {
-      const tr = document.createElement('tr');
-      values.forEach(val => {
-        const td = document.createElement('td');
-        td.textContent = val;
-        tr.appendChild(td);
+    function getMultiValues(containerId, count) {
+      const sets = document.querySelectorAll(`#${containerId} .multi-input`);
+      return Array.from(sets).map(set => {
+        const inputs = set.querySelectorAll('input');
+        return Array.from(inputs).map(input => input.value);
       });
-      document.querySelector(`#${tableId} tbody`).appendChild(tr);
+    }
+
+    function getListValues(containerId) {
+      return Array.from(document.querySelectorAll(`#${containerId} input`)).map(i => i.value).filter(Boolean);
+    }
+
+    function getSkillTableValues(containerId, fields) {
+      const rows = document.querySelectorAll(`#${containerId} .row`);
+      return Array.from(rows).map(row => {
+        return Array.from(row.querySelectorAll('input, select')).map(input => input.value);
+      });
+    }
+
+    function addBullet(containerId, placeholder) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = placeholder;
+      document.getElementById(containerId).appendChild(input);
     }
 
     function addEducation() {
-      const level = document.getElementById('eduLevel').value;
-      const inst = document.getElementById('eduInstitution').value;
-      const award = document.getElementById('eduAward').value;
-      const years = document.getElementById('eduYears').value;
-      const grades = document.getElementById('eduGrades').value;
-      if (level && inst && award && years && grades) {
-        addRowToTable("educationTable", [level, inst, award, years, grades]);
-        ['eduLevel','eduInstitution','eduAward','eduYears','eduGrades'].forEach(id => document.getElementById(id).value = '');
-      }
+      const div = document.createElement('div');
+      div.className = 'multi-input';
+      div.innerHTML = createInputs(["Level", "School/University", "Award", "Year (e.g. 2020-2023)", "Grades"]);
+      document.getElementById('educationContainer').appendChild(div);
     }
 
-    function addLanguage() {
-      const lang = document.getElementById('langName').value;
-      const speak = document.getElementById('langSpeak').value;
-      const write = document.getElementById('langWrite').value;
-      if (lang && speak && write) {
-        addRowToTable("languageSkills", [lang, speak, write]);
-        ['langName','langSpeak','langWrite'].forEach(id => document.getElementById(id).value = '');
-      }
+    function addExperience() {
+      const div = document.createElement('div');
+      div.className = 'multi-input';
+      div.innerHTML = createInputs(["Job Title", "Time", "Institution", "Department", "Position", "Office Tel"]);
+      document.getElementById('experienceContainer').appendChild(div);
+    }
+
+    function addLanguageSkill() {
+      const container = document.getElementById('languageSkillsContainer');
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <div><input type="text" placeholder="Language"></div>
+        <div>
+          <select><option>Fluent</option><option>Good</option><option>Basic</option></select>
+        </div>
+        <div>
+          <select><option>Fluent</option><option>Good</option><option>Basic</option></select>
+        </div>
+      `;
+      container.appendChild(row);
     }
 
     function addComputerSkill() {
-      const skill = document.getElementById('compSkillName').value;
-      const level = document.getElementById('compSkillLevel').value;
-      if (skill && level) {
-        addRowToTable("computerSkills", [skill, level]);
-        ['compSkillName','compSkillLevel'].forEach(id => document.getElementById(id).value = '');
-      }
+      const container = document.getElementById('computerSkillsContainer');
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <div><input type="text" placeholder="Software"></div>
+        <div>
+          <select><option>Expert</option><option>Intermediate</option><option>Beginner</option></select>
+        </div>
+      `;
+      container.appendChild(row);
     }
-
-    function addCompetency() {
-      const val = document.getElementById('competencyInput').value;
-      if (val) {
-        const li = document.createElement('li');
-        li.textContent = val;
-        document.getElementById('competencyList').appendChild(li);
-        document.getElementById('competencyInput').value = '';
-      }
-    }
-
-    function addInterest() {
-      const val = document.getElementById('interestInput').value;
-      if (val) {
-        const li = document.createElement('li');
-        li.textContent = val;
-        document.getElementById('interestList').appendChild(li);
-        document.getElementById('interestInput').value = '';
-      }
-    }
-
-    function addReferee() {
-      const val = document.getElementById('refereeInput').value;
-      if (val) {
-        const li = document.createElement('li');
-        li.textContent = val;
-        document.getElementById('refereeList').appendChild(li);
-        document.getElementById('refereeInput').value = '';
-      }
-    }
-  </script>
-</body>
+  </script></body>
 </html>
