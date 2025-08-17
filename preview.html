@@ -3,172 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCV Preview</title>
+  <title>SmartCV - Preview</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f8fc;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-    header.page-header {
-      background-color: #004080;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    footer.page-footer {
-      background: #002244;
-      color: white;
-      padding: 30px 20px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      font-size: 0.95em;
-      margin-top: 40px;
-    }
-    footer.page-footer div {
-      margin: 10px 0;
-      min-width: 150px;
-    }
-    footer.page-footer h4 {
-      margin-bottom: 10px;
-      color: #ffffff;
-      border-bottom: 1px solid #777;
-      padding-bottom: 5px;
-    }
-    footer.page-footer a {
-      display: block;
-      color: #ddd;
-      text-decoration: none;
-      margin: 5px 0;
-    }
-    footer.page-footer a:hover {
-      color: #fff;
-    }
-    main {
-      max-width: 960px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    h2 {
-      color: #004080;
-      text-transform: uppercase;
-      border-bottom: 2px solid #aad8ff;
-      padding-bottom: 0.3rem;
-    }
-    .cv-section {
-      margin-bottom: 2rem;
-    }
-    .btn-download {
-      background-color: #008060;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      display: inline-block;
-    }
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    h1, h2 { color: #1a73e8; text-transform: uppercase; }
+    section { margin-bottom: 15px; }
+    button { padding: 10px 15px; border:none; background:#1a73e8; color:#fff; border-radius:8px; cursor:pointer; }
+    button:hover { background:#0c56c7; }
   </style>
 </head>
 <body>
-<header class="page-header">
-  <h1>SmartCV Preview</h1>
-  <p>Review and download your CV</p>
-</header>
-<main>
-  <div id="cvPreview">
-    <p>Loading your CV...</p>
-  </div>
-  <div id="downloadBtn" style="text-align:center; margin-top:20px;">
-    <button class="btn-download" onclick="payThenDownload()">Download CV</button>
-  </div>
-</main>
-<footer class="page-footer">
-  <div>
-    <h4>Navigation</h4>
-    <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="contact.html">Contact</a>
-  </div>
-  <div>
-    <h4>Support</h4>
-    <a href="faqs.html">FAQs</a>
-    <a href="terms.html">Terms & Conditions</a>
-    <a href="privacy.html">Privacy Policy</a>
-  </div>
-</footer>
+  <h1 id="cvName"></h1>
+  <section id="summarySec"><h2>Personal Summary</h2><p id="summary"></p></section>
+  <section id="declSec"><h2>Declaration</h2><p id="declaration"></p></section>
+  <button onclick="downloadPDF()">Download PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
-  const data = JSON.parse(localStorage.getItem("cvData") || '{}');
-
-  const section = (title, content) => `
-    <div class="cv-section">
-      <h2>${title}</h2>
-      ${content}
-    </div>`;
-
-  const list = (items) => `<ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
-
-  const table = (dataArray, headers) => {
-    let rows = dataArray.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('');
-    return `<table border="1" width="100%"><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>${rows}</table>`;
-  };
-
-  const generateCV = () => {
-    if (!data.fullname) return document.getElementById("cvPreview").innerHTML = "<p>No data found.</p>";
-    let html = `<h1>${data.fullname}</h1>`;
-    html += section("PERSONAL SUMMARY", `<p>${data.summary || ''}</p>`);
-
-    const personalInfo = [
-      ["Email", data.email],
-      ["Phone", data.phone],
-      ["Address", data.address],
-      ["Nationality", data.nationality],
-      ["Date of Birth", data.dob],
-      ["Gender", data.gender],
-      ["Marital Status", data.marital_status],
-      ["Languages", data.language],
-      ["NIDA", data.linkedin]
-    ];
-    html += section("PERSONAL INFORMATION", list(personalInfo.map(([k, v]) => `${k}: ${v || ''}`)));
-
-    if (data.education?.length > 0) {
-      html += section("EDUCATIONAL BACKGROUND", table(data.education, ["Level", "School/University", "Award", "Year", "Grades"]));
-    }
-
-    if (data.experience?.length > 0) {
-      html += section("WORKING EXPERIENCE", table(data.experience, ["Title", "Time", "Institution", "Department", "Position", "Office Tel"]));
-    }
-
-    if (data.competencies?.length > 0) {
-      html += section("KEY COMPETENCIES", list(data.competencies));
-    }
-    if (data.languageSkills?.length > 0) {
-      html += section("LANGUAGE SKILLS", table(data.languageSkills, ["Language", "Speaking", "Writing"]));
-    }
-    if (data.computerSkills?.length > 0) {
-      html += section("COMPUTER SKILLS", table(data.computerSkills, ["Software", "Proficiency"]));
-    }
-    if (data.interests?.length > 0) {
-      html += section("INTERESTS AND HOBBIES", list(data.interests));
-    }
-    if (data.referees?.length > 0) {
-      const refereeBullets = data.referees.map(r => `<li>${r}</li>`).join('');
-      html += section("REFEREES", `<ul>${refereeBullets}</ul>`);
-    }
-    html += section("DECLARATION", `<p>I, ${data.fullname}, hereby declare that the information given above is true to the best of my knowledge and belief.</p>`);
-    document.getElementById("cvPreview").innerHTML = html;
-  };
-
-  function payThenDownload() {
-    window.location.href = "https://checkout.clickpesa.com/payment-page?ref=PYP3CP7980";
+  const data = JSON.parse(localStorage.getItem("cvData"));
+  if(data){
+    document.getElementById("cvName").innerText = data.name;
+    document.getElementById("summary").innerText = data.summary;
+    document.getElementById("declaration").innerText = `I, ${data.name}, hereby declare that the above details are true to the best of my knowledge.`;
   }
-
-  generateCV();
+  function downloadPDF(){
+    const element = document.body;
+    html2pdf().from(element).save("MyCV.pdf");
+  }
 </script>
 </body>
 </html>
