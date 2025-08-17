@@ -105,84 +105,94 @@
       <a href="privacy.html">Privacy Policy</a>
     </div>
   </footer>
+<script>
+  const cvData = JSON.parse(localStorage.getItem('cvData') || '{}');
+  const container = document.getElementById('cvContent');
 
-  <script>
-    const cvData = JSON.parse(localStorage.getItem('cvData') || '{}');
-    const container = document.getElementById('cvContent');
+  function renderCV() {
+    container.innerHTML = `
+      <h2>A: Personal Summary</h2>
+      <p>${cvData.summary || ''}</p>
 
-    function renderCV() {
-      container.innerHTML = `
-        <h2>A: Personal Summary</h2>
-        <p>${cvData.summary || ''}</p>
+      <h2>Personal Information</h2>
+      <ul>
+        <li><b>Full Name:</b> ${cvData.fullname||''}</li>
+        <li><b>Email:</b> ${cvData.email||''}</li>
+        <li><b>Phone:</b> ${cvData.phone||''}</li>
+        <li><b>Address:</b> ${cvData.address||''}</li>
+        <li><b>Nationality:</b> ${cvData.nationality||''}</li>
+        <li><b>Date of Birth:</b> ${cvData.dob||''}</li>
+        <li><b>Gender:</b> ${cvData.gender||''}</li>
+        <li><b>Marital Status:</b> ${cvData.marital_status||''}</li>
+        <li><b>NIDA:</b> ${cvData.NIDA||''}</li>
+      </ul>
 
-        <h2>Personal Information</h2>
-        <ul>
-          <li><b>Full Name:</b> ${cvData.fullname||''}</li>
-          <li><b>Email:</b> ${cvData.email||''}</li>
-          <li><b>Phone:</b> ${cvData.phone||''}</li>
-          <li><b>Address:</b> ${cvData.address||''}</li>
-          <li><b>Nationality:</b> ${cvData.nationality||''}</li>
-          <li><b>Date of Birth:</b> ${cvData.dob||''}</li>
-          <li><b>Gender:</b> ${cvData.gender||''}</li>
-          <li><b>Marital Status:</b> ${cvData.marital_status||''}</li>
-          <li><b>NIDA:</b> ${cvData.NIDA||''}</li>
-        </ul>
+      <h2>B: Education Background</h2>
+      <table>
+        <tr><th>Level</th><th>School/University</th><th>Award</th><th>Years</th><th>Grades</th></tr>
+        ${(cvData.education||[]).map(e=>`<tr>${e.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table>
 
-        <h2>B: Education Background</h2>
-        <table>
-          <tr><th>Level</th><th>School/University</th><th>Award</th><th>Years</th><th>Grades</th></tr>
-          ${(cvData.education||[]).map(e=>`<tr>${e.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
-        </table>
+      <h2>C: Working Experience</h2>
+      <table>
+        <tr><th>Job Title</th><th>Time</th><th>Institution</th><th>Department</th><th>Position</th><th>Office Tel</th></tr>
+        ${(cvData.experience||[]).map(e=>`<tr>${e.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table>
 
-        <h2>C: Working Experience</h2>
-        <table>
-          <tr><th>Job Title</th><th>Time</th><th>Institution</th><th>Department</th><th>Position</th><th>Office Tel</th></tr>
-          ${(cvData.experience||[]).map(e=>`<tr>${e.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
-        </table>
+      <h2>D: Key Competencies</h2>
+      <ul>${(cvData.competencies||[]).map(c=>`<li>${c}</li>`).join('')}</ul>
 
-        <h2>D: Key Competencies</h2>
-        <ul>${(cvData.competencies||[]).map(c=>`<li>${c}</li>`).join('')}</ul>
+      <h2>E: Skills</h2>
+      <h3>Language Skills</h3>
+      <table><tr><th>Language</th><th>Speaking</th><th>Writing</th></tr>
+        ${(cvData.languageSkills||[]).map(l=>`<tr>${l.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table>
 
-        <h2>E: Skills</h2>
-        <h3>Language Skills</h3>
-        <table><tr><th>Language</th><th>Speaking</th><th>Writing</th></tr>
-          ${(cvData.languageSkills||[]).map(l=>`<tr>${l.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
-        </table>
+      <h3>Computer Skills</h3>
+      <table><tr><th>Software</th><th>Proficiency</th></tr>
+        ${(cvData.computerSkills||[]).map(c=>`<tr>${c.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table>
 
-        <h3>Computer Skills</h3>
-        <table><tr><th>Software</th><th>Proficiency</th></tr>
-          ${(cvData.computerSkills||[]).map(c=>`<tr>${c.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
-        </table>
+      <h2>F: Interests and Hobbies</h2>
+      <ul>${(cvData.interests||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
 
-        <h2>F: Interests and Hobbies</h2>
-        <ul>${(cvData.interests||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+      <h2>G: Referees</h2>
+      <table><tr><th>Name</th><th>Position</th><th>Organization</th><th>Contact</th><th>Address</th></tr>
+        ${(cvData.referees||[]).map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table>
 
-        <h2>G: Referees</h2>
-        <table><tr><th>Name</th><th>Position</th><th>Organization</th><th>Contact</th><th>Address</th></tr>
-          ${(cvData.referees||[]).map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}
-        </table>
+      <h2>H: Declaration</h2>
+      <p>I, <b>${cvData.fullname||''}</b>, hereby declare that the information provided above is true and accurate to the best of my knowledge and belief.</p>
+    `;
+  }
 
-        <h2>H: Declaration</h2>
-        <p>I, <b>${cvData.fullname||''}</b>, hereby declare that the information provided above is true and accurate to the best of my knowledge and belief.</p>
-      `;
-    }
-
-    function setTheme(color) {
-      document.documentElement.style.setProperty('--primary', color);
-      localStorage.setItem('themeColor', color);
-      renderCV();
-    }
-
-    function proceedPayment() {
-      // after payment, redirect
-      window.location.href = "https://checkout.clickpesa.com/payment-page?ref=PYP3CP7980";
-      setTimeout(()=> window.location.href="download.html", 3000);
-    }
-
-    // init
-    const savedColor = localStorage.getItem('themeColor') || '#004080';
-    setTheme(savedColor);
+  function setTheme(color) {
+    document.documentElement.style.setProperty('--primary', color);
+    localStorage.setItem('themeColor', color);
     renderCV();
-  </script>
+  }
+
+  function proceedPayment() {
+    // Admin bypass credentials
+    const adminPhone = "0758843829";
+    const adminEmail = "danielgerald148@gmail.com";
+
+    if(cvData.phone === adminPhone || cvData.email === adminEmail){
+      // Skip payment for admin
+      alert("Admin detected: Payment skipped. Proceeding to download...");
+      window.location.href = "download.html";
+    } else {
+      // Regular user: go to ClickPesa payment
+      window.location.href = "https://checkout.clickpesa.com/payment-page?ref=PYP3CP7980";
+    }
+  }
+
+  // Initialize
+  const savedColor = localStorage.getItem('themeColor') || '#004080';
+  setTheme(savedColor);
+  renderCV();
+</script>
+
 </body>
 </html>
+
