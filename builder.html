@@ -1,163 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCV Builder</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f8fc; margin:0; padding:0; }
-    header { background: #0077b6; color: #fff; padding: 15px; text-align: center; font-size: 1.4em; }
-    main { max-width: 900px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1);}
-    h2 { color: #0077b6; margin-top: 20px; }
-    label { display: block; margin-top: 8px; font-weight: bold; }
-    input, textarea, select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; }
-    button { background: #0077b6; color: #fff; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; }
-    button:hover { background: #005f86; }
-    .section { border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-top: 20px; }
-    .entry { margin-top: 15px; padding: 10px; border: 1px dashed #ccc; border-radius: 8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartCV Builder</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+.container { max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+h2 { color: #2c3e50; }
+section { margin-bottom: 20px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; }
+input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
+button { padding: 10px 20px; border: none; border-radius: 5px; background: #3498db; color: #fff; cursor: pointer; margin-top: 5px; }
+ul { list-style-type: disc; margin-left: 20px; }
+</style>
 </head>
 <body>
-  <header>SmartCV Builder</header>
-  <main>
-    <form id="cvForm">
-
-      <div class="section">
-        <h2>PERSONAL SUMMARY</h2>
-        <textarea name="summary" rows="4"></textarea>
-      </div>
-
-      <div class="section">
-        <h2>PERSONAL INFORMATION</h2>
-        <label>Full Name</label><input type="text" name="fullname" required>
-        <label>Email</label><input type="email" name="email">
-        <label>Phone</label><input type="text" name="phone">
-        <label>Address</label><input type="text" name="address">
-        <label>Date of Birth</label><input type="date" name="dob">
-        <label>Nationality</label><input type="text" name="nationality">
-      </div>
-
-      <div class="section" id="educationSection">
-        <h2>EDUCATIONAL BACKGROUND</h2>
-        <div id="educationList"></div>
-        <button type="button" onclick="addEducation()">+ Add Education</button>
-      </div>
-
-      <div class="section" id="workSection">
-        <h2>WORKING EXPERIENCE</h2>
-        <div id="workList"></div>
-        <button type="button" onclick="addWork()">+ Add Experience</button>
-      </div>
-
-      <div class="section">
-        <h2>KEY COMPETENCIES</h2>
-        <textarea name="competencies" rows="3"></textarea>
-      </div>
-
-      <div class="section" id="skillsSection">
-        <h2>SKILLS</h2>
-        <h4>Communication Skills</h4>
-        <div id="commSkills"></div>
-        <button type="button" onclick="addCommSkill()">+ Add Communication Skill</button>
-        <h4>Computer Skills</h4>
-        <div id="compSkills"></div>
-        <button type="button" onclick="addCompSkill()">+ Add Computer Skill</button>
-      </div>
-
-      <div class="section">
-        <h2>INTERESTS & HOBBIES</h2>
-        <textarea name="hobbies" rows="2"></textarea>
-      </div>
-
-      <div class="section" id="refereesSection">
-        <h2>REFEREES</h2>
-        <div id="referees"></div>
-        <button type="button" onclick="addReferee()">+ Add Referee</button>
-      </div>
-
-      <div style="text-align:center;">
-        <button type="submit">Preview CV</button>
-      </div>
-    </form>
-  </main>
-
-  <script>
-    function addEducation(){
-      let container = document.getElementById("educationList");
-      let div = document.createElement("div");
-      div.className = "entry";
-      div.innerHTML = `
-        <label>Level</label><input type="text" name="eduLevel[]">
-        <label>Institution</label><input type="text" name="eduSchool[]">
-        <label>Award</label><input type="text" name="eduAward[]">
-        <label>Years (From - To)</label><input type="text" name="eduYears[]">
-        <label>Grade</label><input type="text" name="eduGrade[]">
-      `;
-      container.appendChild(div);
-    }
-
-    function addWork(){
-      let container = document.getElementById("workList");
-      let div = document.createElement("div");
-      div.className = "entry";
-      div.innerHTML = `
-        <label>Title</label><input type="text" name="jobTitle[]">
-        <label>Period</label><input type="text" name="jobTime[]">
-        <label>Place</label><input type="text" name="jobPlace[]">
-        <label>Institution</label><input type="text" name="jobInstitution[]">
-        <label>Department</label><input type="text" name="jobDepartment[]">
-        <label>Position</label><input type="text" name="jobPosition[]">
-        <label>Office Telephone</label><input type="text" name="jobTel[]">
-      `;
-      container.appendChild(div);
-    }
-
-    function addCommSkill(){
-      let container = document.getElementById("commSkills");
-      let div = document.createElement("div");
-      div.className = "entry";
-      div.innerHTML = `<input type="text" name="commSkill[]" placeholder="Communication Skill">`;
-      container.appendChild(div);
-    }
-
-    function addCompSkill(){
-      let container = document.getElementById("compSkills");
-      let div = document.createElement("div");
-      div.className = "entry";
-      div.innerHTML = `<input type="text" name="compSkill[]" placeholder="Computer Skill">`;
-      container.appendChild(div);
-    }
-
-    function addReferee(){
-      let container = document.getElementById("referees");
-      let div = document.createElement("div");
-      div.className = "entry";
-      div.innerHTML = `
-        <label>Name</label><input type="text" name="refName[]">
-        <label>Organization</label><input type="text" name="refOrg[]">
-        <label>Position</label><input type="text" name="refPos[]">
-        <label>Address</label><input type="text" name="refAddr[]">
-        <label>Contact</label><input type="text" name="refContact[]">
-      `;
-      container.appendChild(div);
-    }
-
-    document.getElementById("cvForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      let data = new FormData(this);
-      let obj = {};
-      data.forEach((value, key)=>{
-        if(key.endsWith("[]")){
-          key = key.replace("[]","");
-          if(!obj[key]) obj[key] = [];
-          obj[key].push(value);
-        } else {
-          obj[key] = value;
-        }
-      });
-      localStorage.setItem("cvData", JSON.stringify(obj));
-      window.location.href = "preview.html";
-    });
-  </script>
+<div class="container">
+<h2>SmartCV Builder</h2>
+<form id="cvForm">
+<section>
+<h3>Personal Summary</h3>
+<textarea name="summary" placeholder="Write your personal summary..."></textarea>
+</section>
+<section>
+<h3>Personal Information</h3>
+<input type="text" name="fullname" placeholder="Full Name" required>
+<input type="text" name="email" placeholder="Email" required>
+<input type="text" name="phone" placeholder="Phone Number">
+<input type="text" name="address" placeholder="Address">
+<!-- Add more personal info fields as needed -->
+</section>
+<section>
+<h3>Education Background</h3>
+<div id="educationContainer"></div>
+<button type="button" onclick="addEducation()">+ Add Education</button>
+</section>
+<section>
+<h3>Working Experience</h3>
+<div id="experienceContainer"></div>
+<button type="button" onclick="addExperience()">+ Add Experience</button>
+</section>
+<section>
+<h3>Key Competencies</h3>
+<div id="competenciesContainer"></div>
+<button type="button" onclick="addCompetency()">+ Add Competency</button>
+</section>
+<section>
+<h3>Skills</h3>
+<h4>Communication Skills</h4>
+<div id="commSkillsContainer"></div>
+<button type="button" onclick="addCommSkill()">+ Add Communication Skill</button>
+<h4>Computer Skills</h4>
+<div id="compSkillsContainer"></div>
+<button type="button" onclick="addCompSkill()">+ Add Computer Skill</button>
+</section>
+<section>
+<h3>Languages</h3>
+<div id="languagesContainer"></div>
+<button type="button" onclick="addLanguage()">+ Add Language</button>
+</section>
+<section>
+<h3>Interests & Hobbies</h3>
+<div id="hobbiesContainer"></div>
+<button type="button" onclick="addHobby()">+ Add Hobby</button>
+</section>
+<section>
+<h3>Referees</h3>
+<div id="refereeContainer"></div>
+<button type="button" onclick="addReferee()">+ Add Referee</button>
+</section>
+<section>
+<h3>Declaration & Signature</h3>
+<p id="declarationText"></p>
+</section>
+<button type="submit">Preview CV</button>
+</form>
+</div>
+<script>
+let eduCount=0, expCount=0, compCount=0, commCount=0, langCount=0, hobbyCount=0, refCount=0;
+function addEducation(){
+  eduCount++;
+  const div = document.createElement('div');
+  div.innerHTML=`<select name='edu_level_${eduCount}'><option>Primary</option><option>Secondary</option><option>Diploma</option><option>Bachelor</option><option>Master</option><option>PhD</option></select>
+  <input type='text' name='school_${eduCount}' placeholder='School/University'>
+  <input type='text' name='award_${eduCount}' placeholder='Award/Degree'>
+  <input type='text' name='start_${eduCount}' placeholder='Start Year'>
+  <input type='text' name='end_${eduCount}' placeholder='Completion Year'>
+  <input type='text' name='grade_${eduCount}' placeholder='Grades'>`; 
+  document.getElementById('educationContainer').appendChild(div);
+}
+function addExperience(){
+  expCount++;
+  const div=document.createElement('div');
+  div.innerHTML=`<input type='text' name='title_${expCount}' placeholder='Job Title'>
+  <input type='text' name='period_${expCount}' placeholder='Time Period'>
+  <input type='text' name='place_${expCount}' placeholder='Place'>
+  <input type='text' name='institution_${expCount}' placeholder='Institution'>
+  <input type='text' name='department_${expCount}' placeholder='Department'>
+  <input type='text' name='position_${expCount}' placeholder='Position'>
+  <input type='text' name='officeTel_${expCount}' placeholder='Office Telephone'>`;
+  document.getElementById('experienceContainer').appendChild(div);
+}
+function addCompetency(){ compCount++; const div=document.createElement('div'); div.innerHTML=`<input type='text' name='competency_${compCount}' placeholder='Key Competency'>`; document.getElementById('competenciesContainer').appendChild(div); }
+function addCommSkill(){ commCount++; const div=document.createElement('div'); div.innerHTML=`<input type='text' name='commSkill_${commCount}' placeholder='Communication Skill'>`; document.getElementById('commSkillsContainer').appendChild(div); }
+function addCompSkill(){ compCount++; const div=document.createElement('div'); div.innerHTML=`<input type='text' name='compSkill_${compCount}' placeholder='Computer Skill'><select name='level_${compCount}'><option>Beginner</option><option>Intermediate</option><option>Expert</option></select>`; document.getElementById('compSkillsContainer').appendChild(div); }
+function addLanguage(){ langCount++; const div=document.createElement('div'); div.innerHTML=`<select name='lang_${langCount}'><option>English</option><option>French</option><option>Spanish</option><option>German</option><option>Swahili</option></select><select name='lang_level_${langCount}'><option>Native</option><option>Fluent</option><option>Intermediate</option><option>Beginner</option></select>`; document.getElementById('languagesContainer').appendChild(div); }
+function addHobby(){ hobbyCount++; const div=document.createElement('div'); div.innerHTML=`<input type='text' name='hobby_${hobbyCount}' placeholder='Hobby or Interest'>`; document.getElementById('hobbiesContainer').appendChild(div); }
+function addReferee(){ refCount++; const div=document.createElement('div'); div.innerHTML=`<input type='text' name='refName_${refCount}' placeholder='Name'>
+<input type='text' name='refOrg_${refCount}' placeholder='Organization'>
+<input type='text' name='refPosition_${refCount}' placeholder='Position'>
+<input type='text' name='refAddress_${refCount}' placeholder='Address'>
+<input type='text' name='refContact_${refCount}' placeholder='Contact'>`; document.getElementById('refereeContainer').appendChild(div); }
+// Generate declaration text based on name
+document.getElementById('cvForm').addEventListener('input', ()=>{
+  const fullName=document.querySelector("input[name='fullname']").value;
+  document.getElementById('declarationText').innerText=`I, ${fullName}, hereby declare that the information provided above is true and correct.`;
+});
+</script>
 </body>
 </html>
